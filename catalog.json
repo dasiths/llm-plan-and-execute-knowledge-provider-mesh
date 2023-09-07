@@ -1,0 +1,27 @@
+[
+    {
+        "name": "weather",
+        "description": "Helps to retrieve weather forecast.\nFunction input parameter should be exactly in the following JSON format: {{\"request_payload\":{{\"date\":\"date\",\"location\":\"location\"}},\"metadata\":{{\"request_id\":\"unique-request-id-here required\"}}}}",
+        "provider_url": "http://0.0.0.0:50001/process"
+    },
+    {
+        "name": "store_lister",
+        "description": "Helps to list all the Bunnigs stores and their store information like address, opening hours and 'store_id'.\nFunction input parameter should be exactly in the following JSON format: {{\"request_payload\":{{\"store_type\":\"all\"}},\"metadata\":{{\"request_id\":\"unique-request-id-here required\"}}}}",
+        "provider_url": "http://0.0.0.0:50002/get_all_stores"
+    },
+    {
+        "name": "closest_store_finder",
+        "description": "Helps to find the closest Hardy stores to a given suburb so the user can find what the closest stores with their `store_name` and `store_id` are.\nGenerated payload should be exactly in the following JSON format: {{\"request_payload\":{{\"suburb\":\"suburb\"}},\"metadata\":{{\"request_id\":\"unique-request-id-here required\"}}}}",
+        "provider_url": "http://0.0.0.0:50002/find_closest_store"
+    },
+    {
+        "name": "store_stock_availability_finder",
+        "description": "Helps to retrieve the stock qty available using the 'item_code' and 'store_id' for any Hardy store. `store_id` is a 3 digit number which can be found using the 'store_lister'. `item_code` is the product code which can be found using 'item_lookup'. You can't use the item name or description for lookup here.\nFunction input parameter should be exactly in the following JSON format: {{\"request_payload\":{{\"store_id\":\"store_id\",\"item_code\":\"item_code\"}},\"metadata\":{{\"request_id\":\"unique-request-id-here required\"}}}}",
+        "provider_url": "http://0.0.0.0:50002/find_available_stock"
+    },
+    {
+        "name": "item_search",
+        "description": "Helps to search the items using description or name and returns 'item_code' for any matching entries in the Hardy catalog.\nThis does not provide any quantities.\nFunction input parameter should be exactly in the following JSON format: {{\"request_payload\":{{\"query\":\"query\"}},\"metadata\":{{\"request_id\":\"unique-request-id-here required\"}}}}",
+        "provider_url": "http://0.0.0.0:50002/find_item"
+    }
+]
