@@ -1,8 +1,9 @@
 streamlit
-langchain==0.0.250
+langchain==0.1.2
+langchainhub
+langchain-openai
 openai
 google-search-results
-langchain_experimental==0.0.11
 markdown
 pydantic
 Flask
