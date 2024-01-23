@@ -4,13 +4,13 @@ This exercise demonstrates how to use the "Plan and Execute" agent type from Lan
 
 A "knowledge provider" is a wrapper around an existing API or data source that exposes that to the Agent in a curated fashion. (i.e. Prompt hints, input error etc in a human readable fashion.)
 
-You can use a raw (not wrapped) API directly but it may need to have simple inputs and outputs to make it a viable option. The SerpAPI is a good example.
+Alternatively, you can use a raw (not wrapped) API directly but it may need to have simple inputs and outputs to make it a viable option. The SerpAPI is a good example.
 
 ## :bulb: Why Do We Need This
 
 This is an experiment to show that you can use GPT4 with Plan and Execute agent type to work with "existing" APIs and data sources. This means you can start integrating the LLM with existing information systems. The LLM is powerful enough to understand where to go for the data and connect different disparate sources of data to formulate an answer than spans many domains within the same org or different orgs.
 
-While "slow", this demonstrates the true power of the LLM. The responses and steps are not deterministic but the final answer is mostly are accurate for it to be useful in many scenarios.
+While "slow", this demonstrates the true power of the LLM. The responses and steps are not deterministic but the final answers are mostly are accurate for it to be useful in many scenarios.
 
 ## :wrench: How It Works
 
@@ -18,7 +18,7 @@ This examples uses the [`catalog.py`](./catalog.py) script to load the [`catalog
 
 The plumbing happens in the [`knowledge_provider.py`](./knowledge_provider.py) file. It creates the required wrapping around the LangChain base tool to intercept and handle the call to the API endpoint.
 
-We have 2 knowledge providers available. One returns a hardcoded value for weather based on a date. The other returns information about Hardy stores. *Note: The Bunning store information isn't complete and the `find_closest_store` function returns a hardcoded mock response each time regardless of what suburb is passed in.*
+We have 2 knowledge providers available. One returns a hardcoded value for weather based on a date. The other returns information about Hardy stores. *Note: The Hardy store information isn't complete and the `find_closest_store` function returns a hardcoded mock response each time regardless of what suburb is passed in.*
 
 The agent also has a tool which allows it to ask you questions during the planned run if it needs further clarification. The user input prompt will come up on the terminal where you ran the agent from.
 
