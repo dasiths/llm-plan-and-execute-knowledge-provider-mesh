@@ -2,7 +2,7 @@
 langchain==0.0.276
 langchain-experimental==0.0.11
 
-LangChain PlanAndExecute: https://python.langchain.com/docs/modules/agents/agent_types/plan_and_execute
+LangChain PlanAndExecute: https://cobusgreyling.medium.com/langchain-implementation-of-plan-and-solve-prompting-6fd2270c68f5
 
 This file uses streamlit, so `streamlit run agents_example.py` to run it.
 
@@ -21,10 +21,10 @@ from termcolor import colored
 
 from langchain import hub
 from langchain.agents import AgentExecutor, create_json_chat_agent
+from langchain_experimental.plan_and_execute import PlanAndExecute, load_agent_executor, load_chat_planner
 
 from langchain import SerpAPIWrapper
 from langchain.agents.tools import Tool
-#from langchain.agents import initialize_agent, AgentType
 from langchain import LLMMathChain
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import MessagesPlaceholder
@@ -117,16 +117,23 @@ def setup_agent():
     knowledge_tools = [service.get_tool() for service in get_catalog()]
     tools.extend(knowledge_tools)
 
-    # json chat agent https://python.langchain.com/docs/modules/agents/agent_types/json_agent
-    prompt = hub.pull("hwchase17/react-chat-json")
-    agent = create_json_chat_agent(llm, tools, prompt)
+    # # json chat agent https://python.langchain.com/docs/modules/agents/agent_types/json_agent
+    # prompt = hub.pull("hwchase17/react-chat-json")
+    # agent = create_json_chat_agent(llm, tools, prompt)
 
-    # Create an agent executor by passing in the agent and tools
-    agent_executor = AgentExecutor(
-        agent=agent, tools=tools, verbose=True, handle_parsing_errors=True
-    )
+    # # Create an agent executor by passing in the agent and tools
+    # agent_executor = AgentExecutor(
+    #     agent=agent, tools=tools, verbose=True, handle_parsing_errors=True
+    # )
 
-    return agent_executor
+    # return agent_executor
+
+    # https://cobusgreyling.medium.com/langchain-implementation-of-plan-and-solve-prompting-6fd2270c68f5
+    planner = load_chat_planner(llm)
+    executor = load_agent_executor(llm, tools, verbose=True)
+    agent = PlanAndExecute(planner=planner, executor=executor, verbose=True)
+
+    return agent
 
 agent_executor = setup_agent()
 
@@ -134,7 +141,7 @@ def generate_response(input_text):
 
     with st.spinner(text="Generating... Please check the agent backend to see if it requires further user input."):
         response = agent_executor.invoke({"input": input_text})
-
+        print(response)
         st.info(response["output"], icon="🤖")
 
         st.divider()

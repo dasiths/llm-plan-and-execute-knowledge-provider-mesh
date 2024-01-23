@@ -8,6 +8,8 @@ from langchain.callbacks.manager import (
     CallbackManagerForToolRun,
 )
 
+# https://python.langchain.com/docs/modules/agents/tools/custom_tools
+
 class KnowledgeProviderToolInput(BaseModel):
     request_payload: dict = Field()
     metadata: Optional[dict] = Field(default=None)
@@ -32,6 +34,7 @@ class KnowledgeProviderServiceOutput():
 
 class KnowledgeProviderTool(BaseTool):
     args_schema: Type[BaseModel] = KnowledgeProviderToolInput
+    return_direct: bool = True
 
     def __int__(self, name, description, **data: any):
         self.name = name
@@ -58,6 +61,7 @@ class KnowledgeProviderTool(BaseTool):
         raise NotImplementedError("tool does not support async")
 
 def create_tool(name, description, call_handler: Callable[[dict, dict], str]=None, **data: any):
+    print("creating tool: ", name, " \n", description)
     tool = KnowledgeProviderTool(name=name, description=description, **data)
     if call_handler:
         tool.metadata = {}

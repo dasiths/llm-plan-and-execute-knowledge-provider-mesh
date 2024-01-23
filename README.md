@@ -26,7 +26,7 @@ The agent also has a tool which allows it to ask you questions during the planne
 
 These are the papers and information which this experiment was inspired from.
 
-LangChain PlanAndExecute: <https://python.langchain.com/docs/modules/agents/agent_types/plan_and_execute>
+LangChain PlanAndExecute: <https://cobusgreyling.medium.com/langchain-implementation-of-plan-and-solve-prompting-6fd2270c68f5>
 
 - `[2305.04091]` Plan-and-Solve Prompting: Improving Zero-Shot Chain-of-Thought Reasoning by Large Language Models: <https://arxiv.org/abs/2305.04091>
 - `[2303.11366]` Reflexion: Language Agents with Verbal Reinforcement Learning: <https://arxiv.org/abs/2303.11366>
