@@ -2,7 +2,9 @@
 langchain==0.0.276
 langchain-experimental==0.0.11
 
-LangChain PlanAndExecute: https://cobusgreyling.medium.com/langchain-implementation-of-plan-and-solve-prompting-6fd2270c68f5
+LangChain PlanAndExecute: 
+- https://cobusgreyling.medium.com/langchain-implementation-of-plan-and-solve-prompting-6fd2270c68f5
+- https://github.com/langchain-ai/langchain/blob/master/cookbook/plan_and_execute_agent.ipynb
 
 This file uses streamlit, so `streamlit run agents_example.py` to run it.
 
@@ -23,9 +25,10 @@ from langchain import hub
 from langchain.agents import AgentExecutor, create_json_chat_agent
 from langchain_experimental.plan_and_execute import PlanAndExecute, load_agent_executor, load_chat_planner
 
-from langchain import SerpAPIWrapper
+from langchain.chains import LLMMathChain
+from langchain_community.utilities import SerpAPIWrapper
+
 from langchain.agents.tools import Tool
-from langchain import LLMMathChain
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import MessagesPlaceholder
 from common import get_llm

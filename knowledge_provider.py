@@ -61,7 +61,7 @@ class KnowledgeProviderTool(BaseTool):
         raise NotImplementedError("tool does not support async")
 
 def create_tool(name, description, call_handler: Callable[[dict, dict], str]=None, **data: any):
-    print("creating tool: ", name, " \n", description)
+    print("Creating knowledge provider: \n\tName =", name, " \n\tDescription =", description, "\n")
     tool = KnowledgeProviderTool(name=name, description=description, **data)
     if call_handler:
         tool.metadata = {}
