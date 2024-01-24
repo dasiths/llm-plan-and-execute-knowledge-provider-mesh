@@ -27,6 +27,7 @@ def get_llm(deployment=None, model=None):
                         azure_endpoint=RESOURCE_ENDPOINT,
                         openai_api_key=AZURE_OPENAI_API_KEY,
                         api_version="2023-05-15",
+                        temperature=0.0
                         )
 
     return llm
