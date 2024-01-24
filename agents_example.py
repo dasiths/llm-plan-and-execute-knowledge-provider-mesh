@@ -1,8 +1,11 @@
 """
-langchain==0.0.276
-langchain-experimental==0.0.11
+langchain==0.1.2
+langchain-experimental==0.0.49
+langchainhub=0.1.14
+langchain-openai==0.0.3
+openai==1.9.0
 
-LangChain PlanAndExecute: 
+LangChain PlanAndExecute:
 - https://cobusgreyling.medium.com/langchain-implementation-of-plan-and-solve-prompting-6fd2270c68f5
 - https://github.com/langchain-ai/langchain/blob/master/cookbook/plan_and_execute_agent.ipynb
 
@@ -21,16 +24,12 @@ Run `python3 ./store_and_stock_app.py` to start the required store and stock ser
 import streamlit as st
 from termcolor import colored
 
-from langchain import hub
-from langchain.agents import AgentExecutor, create_json_chat_agent
 from langchain_experimental.plan_and_execute import PlanAndExecute, load_agent_executor, load_chat_planner
 
 from langchain.chains import LLMMathChain
 from langchain_community.utilities import SerpAPIWrapper
 
 from langchain.agents.tools import Tool
-from langchain.memory import ConversationBufferMemory
-from langchain.prompts import MessagesPlaceholder
 from common import get_llm
 from dotenv import find_dotenv, load_dotenv
 import json
@@ -48,7 +47,7 @@ user_input_history = st.session_state['user_input_history']
 st.set_page_config(page_title="🥼🧪 Experimenting With Langchain Agents And \"Knowledge Provider Mesh\"")
 st.title("🥼🧪 Experimenting With Langchain Agents And \"Knowledge Provider Mesh\"")
 
-st.info("Hi. This agent is using JSON Chat Agent type. Type your query and sit submit.")
+st.info("Hi. This demo is using plan and execute agent type from Langchain. Type your query and sit submit.")
 
 
 def get_user_input(query: str) -> str:
@@ -70,13 +69,10 @@ def get_user_input(query: str) -> str:
 def setup_agent():
     load_dotenv(find_dotenv())
 
-    chat_history = MessagesPlaceholder(variable_name="chat_history")
-    memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
-
     llm = get_llm()
 
-    search = SerpAPIWrapper()
-    llm_math_chain = LLMMathChain.from_llm(llm=llm, verbose=True)
+    search_tool = SerpAPIWrapper()
+    math_tool = LLMMathChain.from_llm(llm=llm, verbose=True)
 
     tools = []
 
@@ -85,12 +81,12 @@ def setup_agent():
         tools = [
             Tool(
                 name="Search",
-                func=search.run,
+                func=search_tool.run,
                 description="useful for when you need to answer questions about current events",
             ),
             Tool(
                 name="Calculator",
-                func=llm_math_chain.run,
+                func=math_tool.run,
                 description="useful for when you need to answer questions about math",
             )
         ]
@@ -120,22 +116,10 @@ def setup_agent():
     knowledge_tools = [service.get_tool() for service in get_catalog()]
     tools.extend(knowledge_tools)
 
-    # # json chat agent https://python.langchain.com/docs/modules/agents/agent_types/json_agent
-    # prompt = hub.pull("hwchase17/react-chat-json")
-    # agent = create_json_chat_agent(llm, tools, prompt)
-
-    # # Create an agent executor by passing in the agent and tools
-    # agent_executor = AgentExecutor(
-    #     agent=agent, tools=tools, verbose=True, handle_parsing_errors=True
-    # )
-
-    # return agent_executor
-
     # https://cobusgreyling.medium.com/langchain-implementation-of-plan-and-solve-prompting-6fd2270c68f5
     planner = load_chat_planner(llm)
     executor = load_agent_executor(llm, tools, verbose=True)
     agent = PlanAndExecute(planner=planner, executor=executor, verbose=True)
-
     return agent
 
 agent_executor = setup_agent()
