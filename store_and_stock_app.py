@@ -75,7 +75,7 @@ def find_available_stock(action_input: dict) -> str:
         items_in_store = [item for item in stock_qty if item["item_code"] == item_code]
 
     if len(items_in_store) > 0:
-        return json.dumps(items_in_store)
+        return json.dumps(items_in_store) + "\n\nIf you want to find the qty for another store please use this tool again with the 'store_id' of that store."
 
     return f"Sorry, {item_code} is not available in any store."
 

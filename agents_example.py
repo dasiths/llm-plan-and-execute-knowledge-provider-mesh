@@ -145,6 +145,7 @@ def generate_response(input_text):
 # What is the weather forecast for Melbourne on 28/08/2023?
 
 ### Hardys stock knowledge provider
+# I'm based in Heathmont and I want to buy the Ryobi One Plus 18V Drill from the Hardy stores.  List all stores within 20km that have that item in stock and show them in markdown format.
 # What are the 3 closest Hardy stores to Heathmont with the Ryobi One Plus 18V Drill and the qty available?
 # What are the 3 closest Hardy stores to Heathmont with the Ryobi One Plus 18V Drill currently in stock today and their qty available? Show them in a markdown table.
 # I'm looking to purchase the "Ryobi One Plus 18V Drill" today. I need to find the 2 Hardy stores nearest to Heathmont that have it on stock.
