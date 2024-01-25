@@ -48,9 +48,9 @@ st.set_page_config(page_title="🥼🧪 Experimenting With Langchain Agents And 
 st.title("🥼🧪 Experimenting With Langchain Agents And \"Knowledge Provider Mesh\"")
 
 if usePlanAndExecuteAgentType:
-    st.info("Hi. This agent is using PlanAndExecute agent type. Type your query and sit submit.")
+    st.info("Hi. This agent is using PlanAndExecute agent type. Type your query and hit submit.")
 else:
-    st.info("Hi. This agent is using STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION agent type. Type your query and sit submit.")
+    st.info("Hi. This agent is using STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION agent type. Type your query and hit submit.")
 
 
 def get_user_input(query: str) -> str:
@@ -163,6 +163,7 @@ def generate_response(input_text):
 
 ### Hardys stock knowledge provider
 # What are the 3 closest Hardy stores to Heathmont with the Ryobi One Plus 18V Drill and the qty available?
+# What are the stores with Ryobi One Plus 18V Drill currently in stock today and available qty for each store? Show them in a markdown table sorted with their distance to Heathmont.
 # What are the 3 closest Hardy stores to Heathmont with the Ryobi One Plus 18V Drill currently in stock today and their qty available? Show them in a markdown table.
 # I'm looking to purchase the "Ryobi One Plus 18V Drill" today. I need to find the 2 Hardy stores nearest to Heathmont that have it on stock.
 
