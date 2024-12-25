@@ -10,4 +10,4 @@ echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$bashrc_path"
 cat $HOME/.zshrc
 export PATH="$HOME/.local/bin:$PATH"
 
-pip3 install -r requirements.txt
+#pip3 install -r requirements.txt

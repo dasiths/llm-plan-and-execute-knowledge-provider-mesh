@@ -1,2 +1,5 @@
+autogen-agentchat==0.4.0.dev11
+autogen-ext[openai,azure]==0.4.0.dev11
 fastapi
 uvicorn
+python-dotenv
