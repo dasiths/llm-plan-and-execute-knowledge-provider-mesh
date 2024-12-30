@@ -35,7 +35,7 @@ BASE_URL = "http://localhost"
 async def call_get_all_stores() -> str:
     async with httpx.AsyncClient() as client:
         try:
-            response = await client.get(f"{BASE_URL}:5000/stores")
+            response = await client.get(f"{BASE_URL}:5000/stores/all")
             response.raise_for_status()
             return f"All Stores: {response.json()}"
         except httpx.HTTPStatusError as e:
@@ -45,7 +45,7 @@ async def call_get_all_stores() -> str:
 async def call_find_store_by_id(store_id: str) -> str:
     async with httpx.AsyncClient() as client:
         try:
-            response = await client.get(f"{BASE_URL}:5000/stores/{store_id}")
+            response = await client.get(f"{BASE_URL}:5000/stores/store/{store_id}")
             response.raise_for_status()
             return f"Store {store_id}: {response.json()}"
         except httpx.HTTPStatusError as e:
@@ -68,7 +68,7 @@ async def call_find_closest_stores(location: str) -> str:
 async def call_get_catalog() -> str:
     async with httpx.AsyncClient() as client:
         try:
-            response = await client.get(f"{BASE_URL}:5001/catalog")
+            response = await client.get(f"{BASE_URL}:5001/catalog/all")
             response.raise_for_status()
             return f"Catalog: {response.json()}"
         except httpx.HTTPStatusError as e:
@@ -78,18 +78,26 @@ async def call_get_catalog() -> str:
 async def call_get_item_description(item_code: str) -> str:
     async with httpx.AsyncClient() as client:
         try:
-            response = await client.get(f"{BASE_URL}:5001/catalog/{item_code}")
+            response = await client.get(f"{BASE_URL}:5001/catalog/item/{item_code}")
             response.raise_for_status()
             return f"Item {item_code}: {response.json()}"
         except httpx.HTTPStatusError as e:
             return f"Error getting item description: {e.response.text}"
 
+async def call_find_item(query: str) -> str:
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(f"{BASE_URL}:5001/catalog/search/{query}")
+            response.raise_for_status()
+            return f"Results: {response.json()}"
+        except httpx.HTTPStatusError as e:
+            return f"Error finding item: {e.response.text}"
 
 ## Stock API Calls
 async def call_get_stock_level(store_id: str, item_code: str) -> str:
     async with httpx.AsyncClient() as client:
         try:
-            response = await client.get(f"{BASE_URL}:5002/stock/{store_id}/{item_code}")
+            response = await client.get(f"{BASE_URL}:5002/stock/qty/{store_id}/{item_code}")
             response.raise_for_status()
             return f"Stock at Store {store_id} for Item {item_code}: {response.json()}"
         except httpx.HTTPStatusError as e:
@@ -118,6 +126,9 @@ async def main() -> None:
         Your job is to break down complex tasks into smaller, manageable subtasks.
         Your team members are:
             weather agent: gets weather information for a given city
+            stores agent: provides store information like store name and address
+            catalog agent: provides catalog information like item description and item code
+            stock agent: provides stock information like stock quantity and availability
 
         You only plan and delegate tasks - you do not execute them yourself.
 
@@ -147,7 +158,7 @@ async def main() -> None:
         tools=[call_get_all_stores, call_find_store_by_id, call_find_closest_stores],
         system_message="""
             You are a stores agent.
-            You provide store information using the stores tool.
+            You provide store information using the tools specified below.
             You can only make one request at a time.
             You only have the get_all_stores, find_store_by_id and call_find_closest_stores tools.
             """,
@@ -156,12 +167,12 @@ async def main() -> None:
     catalog_agent = AssistantAgent(
         name="catalog_agent",
         model_client=get_model_client(),
-        tools=[call_get_catalog, call_get_item_description],
+        tools=[call_get_catalog, call_get_item_description, call_find_item],
         system_message="""
             You are a catalog agent.
-            You provide catalog information using the catalog tool.
+            You provide catalog information using the tools specified below.
             You can only make one request at a time.
-            You only have the get_catalog and get_item_description tools.
+            You only have the get_catalog, get_item_description, find_item tools.
             """,
     )
 
@@ -171,7 +182,7 @@ async def main() -> None:
         tools=[call_get_stock_level, call_find_available_stock],
         system_message="""
             You are a stock agent.
-            You provide stock information using the stock tool.
+            You provide stock information using the tools specified below.
             You can only make one request at a time.
             You only have the get_stock_level and find_available_stock tools.
             """,
@@ -179,14 +190,14 @@ async def main() -> None:
 
     # Define termination condition
     text_mention_termination = TextMentionTermination("TERMINATE")
-    max_messages_termination = MaxMessageTermination(max_messages=25)
+    max_messages_termination = MaxMessageTermination(max_messages=50)
     termination = text_mention_termination | max_messages_termination
 
     # Define a team
     # https://microsoft.github.io/autogen/0.2/docs/tutorial/conversation-patterns
     # https://microsoft.github.io/autogen/dev/user-guide/agentchat-user-guide/tutorial/selector-group-chat.html
     agent_team = SelectorGroupChat(
-        [planning_agent, weather_agent, stores_agent, catalog_agent, stock_agent],
+        [planning_agent, stores_agent, catalog_agent, stock_agent, weather_agent],
         model_client=get_model_client(),
         termination_condition=termination,
     )

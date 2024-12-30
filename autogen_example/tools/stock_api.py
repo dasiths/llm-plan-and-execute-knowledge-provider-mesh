@@ -10,7 +10,7 @@ class StockItem(BaseModel):
 
 stock_app = FastAPI(title="Stock API")
 
-@stock_app.get("/stock/{store_id}/{item_code}", response_model=StockItem)
+@stock_app.get("/stock/qty/{store_id}/{item_code}", response_model=StockItem)
 async def get_stock_level(store_id: str, item_code: str) -> StockItem:
     stock = next((stock for stock in stock_qty if stock["store_id"] == store_id and stock["item_code"] == item_code), None)
     if not stock:

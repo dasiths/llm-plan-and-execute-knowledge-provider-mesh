@@ -10,11 +10,11 @@ class Store(BaseModel):
 
 stores_app = FastAPI(title="Stores API")
 
-@stores_app.get("/stores", response_model=List[Store])
+@stores_app.get("/stores/all", response_model=List[Store])
 async def get_all_stores() -> List[Store]:
     return all_stores
 
-@stores_app.get("/stores/{store_id}", response_model=Store)
+@stores_app.get("/stores/store/{store_id}", response_model=Store)
 async def find_store_by_id(store_id: str) -> Store:
     store = next((store for store in all_stores if store["store_id"] == store_id), None)
     if not store:
