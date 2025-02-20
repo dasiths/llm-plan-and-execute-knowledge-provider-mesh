@@ -225,7 +225,7 @@ async def main() -> None:
         args=[
             "-y",
             "@modelcontextprotocol/server-filesystem",
-            str("/workspaces/llm-plan-and-execute-knowledge-provider-mesh/autogen_example/tools/file_agent_workdir"),
+            "/workspaces/llm-plan-and-execute-knowledge-provider-mesh/autogen_example/tools/file_agent_workdir/",
         ],
     )
 
@@ -250,13 +250,15 @@ async def main() -> None:
             "JIRA_DOMAIN": os.getenv("JIRA_DOMAIN")
         }
     )
-    #print_mcp_tools(jira_mcp_server)
+    jira_tools = await mcp_server_tools(jira_mcp_server)
+    print_mcp_tools(jira_tools)
     jira_agent = AssistantAgent(
         name="jira_agent",
         model_client=get_model_client(),
-        tools=await mcp_server_tools(jira_mcp_server),
+        tools=jira_tools,
         system_message="""
             You are a Jira agent.
+            Your working directory is /workspaces/llm-plan-and-execute-knowledge-provider-mesh/autogen_example/tools/file_agent_workdir/
             """,
     )
 
