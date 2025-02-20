@@ -265,7 +265,7 @@ async def main() -> None:
 
         stream = agent_team.run_stream(
             task=user_input
-        )  # what's the weather in New York?
+        )  # find the stores with the ryobi drill in stock and write that information to a file called stock.txt
         await Console(stream)
 
 
