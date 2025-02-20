@@ -16,6 +16,7 @@
 			"userUid": "automatic",
 			"userGid": "automatic"
 		},
+		"ghcr.io/devcontainers/features/node:1": {},
 		"ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {
 			"plugins": "ssh-agent zsh-syntax-highlighting zsh-autosuggestions",
 			"omzPlugins": "https://github.com/zsh-users/zsh-autosuggestions https://github.com/zsh-users/zsh-syntax-highlighting",

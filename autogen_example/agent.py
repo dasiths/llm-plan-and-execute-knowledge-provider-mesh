@@ -1,4 +1,5 @@
 import asyncio
+from typing import List
 from autogen_agentchat.agents import AssistantAgent
 from autogen_agentchat.ui import Console
 from autogen_agentchat.conditions import TextMentionTermination, MaxMessageTermination
@@ -7,10 +8,38 @@ from autogen_ext.models.openai import (
     OpenAIChatCompletionClient,
     AzureOpenAIChatCompletionClient,
 )
+from autogen_ext.tools.mcp import mcp_server_tools, StdioMcpToolAdapter, StdioServerParams
 from dotenv import load_dotenv
 import os
 import sys
+from pathlib import Path
 import httpx
+from rich.console import Console as RichConsole
+
+def print_mcp_tools(tools: List[StdioMcpToolAdapter]) -> None:
+    """Print available MCP tools and their parameters in a formatted way."""
+    console = RichConsole()
+    console.print("\n[bold blue]📦 Loaded MCP Tools:[/bold blue]\n")
+
+    for tool in tools:
+        # Tool name and description
+        console.print(f"[bold green]🔧 {tool.schema.get('name', 'Unnamed Tool')}[/bold green]")
+        if description := tool.schema.get('description'):
+            console.print(f"[italic]{description}[/italic]\n")
+
+        # Parameters section
+        if params := tool.schema.get('parameters'):
+            console.print("[yellow]Parameters:[/yellow]")
+            if properties := params.get('properties', {}):
+                required_params = params.get('required', [])
+                for prop_name, prop_details in properties.items():
+                    required_mark = "[red]*[/red]" if prop_name in required_params else ""
+                    param_type = prop_details.get('type', 'any')
+                    console.print(f"  • [cyan]{prop_name}{required_mark}[/cyan]: {param_type}")
+                    if param_desc := prop_details.get('description'):
+                        console.print(f"    [dim]{param_desc}[/dim]")
+
+        console.print("─" * 60 + "\n")
 
 
 def get_model_client():
@@ -129,6 +158,7 @@ async def main() -> None:
             stores agent: provides store information like store name and address
             catalog agent: provides catalog information like item description and item code
             stock agent: provides stock information like stock quantity and availability
+            file system agent: provides file system information and functionality like read and write file contents and directory structure
 
         You only plan and delegate tasks - you do not execute them yourself.
 
@@ -188,6 +218,28 @@ async def main() -> None:
             """,
     )
 
+    ## MCP File System Agent
+    file_system_mcp_server = StdioServerParams(
+        command="npx",
+        args=[
+            "-y",
+            "@modelcontextprotocol/server-filesystem",
+            str("/workspaces/llm-plan-and-execute-knowledge-provider-mesh/autogen_example/tools/"),
+        ],
+    )
+
+    file_system_tools = await mcp_server_tools(file_system_mcp_server)
+    print_mcp_tools(file_system_tools)
+    file_system_agent = AssistantAgent(
+        name="file_system_agent",
+        model_client=get_model_client(),
+        tools=file_system_tools,
+        system_message="""
+            You are a file system agent.
+            """,
+    )
+
+
     # Define termination condition
     text_mention_termination = TextMentionTermination("TERMINATE")
     max_messages_termination = MaxMessageTermination(max_messages=50)
@@ -197,7 +249,7 @@ async def main() -> None:
     # https://microsoft.github.io/autogen/0.2/docs/tutorial/conversation-patterns
     # https://microsoft.github.io/autogen/dev/user-guide/agentchat-user-guide/tutorial/selector-group-chat.html
     agent_team = SelectorGroupChat(
-        [planning_agent, stores_agent, catalog_agent, stock_agent, weather_agent],
+        [planning_agent, stores_agent, catalog_agent, stock_agent, weather_agent, file_system_agent],
         model_client=get_model_client(),
         termination_condition=termination,
     )
