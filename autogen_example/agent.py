@@ -159,6 +159,7 @@ async def main() -> None:
             catalog agent: provides catalog information like item description and item code
             stock agent: provides stock information like stock quantity and availability
             file system agent: provides file system information and functionality like read and write file contents and directory structure
+            jira agent: provides Jira information and functionality like listing, creating and updating issues
 
         You only plan and delegate tasks - you do not execute them yourself.
 
@@ -239,6 +240,25 @@ async def main() -> None:
             """,
     )
 
+    ## MCP Jira Agent
+    jira_mcp_server = StdioServerParams(
+        command="/usr/local/share/nvm/versions/node/v22.14.0/bin/node",
+        args=["./tools/1broseidon_mcp-jira-server/build/index.js"],
+        env= {
+            "JIRA_EMAIL": os.getenv("JIRA_EMAIL"),
+            "JIRA_API_TOKEN": os.getenv("JIRA_API_TOKEN"),
+            "JIRA_DOMAIN": os.getenv("JIRA_DOMAIN")
+        }
+    )
+    #print_mcp_tools(jira_mcp_server)
+    jira_agent = AssistantAgent(
+        name="jira_agent",
+        model_client=get_model_client(),
+        tools=await mcp_server_tools(jira_mcp_server),
+        system_message="""
+            You are a Jira agent.
+            """,
+    )
 
     # Define termination condition
     text_mention_termination = TextMentionTermination("TERMINATE")
@@ -249,7 +269,7 @@ async def main() -> None:
     # https://microsoft.github.io/autogen/0.2/docs/tutorial/conversation-patterns
     # https://microsoft.github.io/autogen/dev/user-guide/agentchat-user-guide/tutorial/selector-group-chat.html
     agent_team = SelectorGroupChat(
-        [planning_agent, stores_agent, catalog_agent, stock_agent, weather_agent, file_system_agent],
+        [planning_agent, stores_agent, catalog_agent, stock_agent, weather_agent, file_system_agent, jira_agent],
         model_client=get_model_client(),
         termination_condition=termination,
     )
@@ -265,7 +285,7 @@ async def main() -> None:
 
         stream = agent_team.run_stream(
             task=user_input
-        )  # find the stores with the ryobi drill in stock and write that information to a file called stock.txt
+        )  # find the stores with the ryobi drill in stock and write that information to a file called stock.txt and then create a jra issue to summarize the findings.
         await Console(stream)
 
 
