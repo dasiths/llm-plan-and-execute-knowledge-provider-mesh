@@ -220,6 +220,7 @@ async def main() -> None:
     )
 
     ## MCP File System Agent
+    # https://github.com/microsoft/autogen/issues/5564
     file_system_mcp_server = StdioServerParams(
         command="npx",
         args=[
@@ -287,7 +288,7 @@ async def main() -> None:
 
         stream = agent_team.run_stream(
             task=user_input
-        )  # find the stores with the ryobi drill in stock and write that information to a file called stock.txt and then create a jra issue to summarize the findings.
+        )  # find the stores with the ryobi drill in stock and write that information to a file called stock.txt and then create a jira issue to summarize the findings.
         await Console(stream)
 
 
