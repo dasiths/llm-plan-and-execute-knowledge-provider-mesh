@@ -225,7 +225,7 @@ async def main() -> None:
         args=[
             "-y",
             "@modelcontextprotocol/server-filesystem",
-            str("/workspaces/llm-plan-and-execute-knowledge-provider-mesh/autogen_example/tools/"),
+            str("/workspaces/llm-plan-and-execute-knowledge-provider-mesh/autogen_example/tools/file_agent_workdir"),
         ],
     )
 
