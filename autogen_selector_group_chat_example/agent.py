@@ -226,7 +226,7 @@ async def main() -> None:
         args=[
             "-y",
             "@modelcontextprotocol/server-filesystem",
-            "/workspaces/llm-plan-and-execute-knowledge-provider-mesh/autogen_example/tools/file_agent_workdir/",
+            "/workspaces/llm-plan-and-execute-knowledge-provider-mesh/autogen_selector_group_chat_example/tools/file_agent_workdir/",
         ],
     )
 
@@ -259,7 +259,7 @@ async def main() -> None:
         tools=jira_tools,
         system_message="""
             You are a Jira agent.
-            Your working directory is /workspaces/llm-plan-and-execute-knowledge-provider-mesh/autogen_example/tools/file_agent_workdir/
+            Your working directory is /workspaces/llm-plan-and-execute-knowledge-provider-mesh/autogen_selector_group_chat_example/tools/file_agent_workdir/
             """,
     )
 
