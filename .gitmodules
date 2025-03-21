@@ -1,0 +1,3 @@
+[submodule "autogen_selector_group_chat_example/tools/1broseidon_mcp-jira-server"]
+	path = autogen_selector_group_chat_example/tools/1broseidon_mcp-jira-server
+	url = https://github.com/MCP-Mirror/1broseidon_mcp-jira-server.git

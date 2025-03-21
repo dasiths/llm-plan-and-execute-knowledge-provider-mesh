@@ -1,11 +1,17 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/python
 {
-	"name": "Python 3",
+	"name": "Planning Agents",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	"image": "mcr.microsoft.com/devcontainers/python:0-3.11",
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
+		// Install the Dapr CLI
+		"ghcr.io/dapr/cli/dapr-cli:0.1.0": {},
+		// Enable Docker (via Docker-in-Docker)
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
+		// Alternatively, use Docker-outside-of-Docker (uses Docker in the host)
+		//"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
 		"ghcr.io/devcontainers/features/common-utils:2": {
 			"installZsh": true,
 			"configureZshAsDefaultShell": true,
@@ -16,6 +22,7 @@
 			"userUid": "automatic",
 			"userGid": "automatic"
 		},
+		"ghcr.io/devcontainers/features/node:1": {},
 		"ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {
 			"plugins": "ssh-agent zsh-syntax-highlighting zsh-autosuggestions",
 			"omzPlugins": "https://github.com/zsh-users/zsh-autosuggestions https://github.com/zsh-users/zsh-syntax-highlighting",
