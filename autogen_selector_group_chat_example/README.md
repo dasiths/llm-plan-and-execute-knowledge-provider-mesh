@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This example demonstrates using AutoGen's SelectorGroupChat to orchestrate specialized agents that interact with external systems. The agents can access external knowledge through API integrations and Model Context Protocol (MCP) servers. This approach enables a multi-agent workflow where each agent has specific capabilities and can be selected dynamically based on the task requirements.
+This example demonstrates using AutoGen's [SelectorGroupChat](https://microsoft.github.io/autogen/stable//user-guide/agentchat-user-guide/selector-group-chat.html) to orchestrate specialized agents that interact with external systems. The agents can access external knowledge through API integrations and Model Context Protocol (MCP) servers. This approach enables a multi-agent workflow where each agent has specific capabilities and can be selected dynamically based on the task requirements.
 
 ## Features
 
@@ -11,9 +11,9 @@ This example demonstrates using AutoGen's SelectorGroupChat to orchestrate speci
   - Store information (locations, details)
   - Catalog information (product descriptions, item codes)
   - Stock information (availability, quantities)
-- **MCP Server Integration**: Incorporates Model Context Protocol servers for:
-  - File system operations (reading/writing files)
-  - Jira issue management (creating, updating, listing issues)
+- **MCP Server Integration**: [Integrates with Model Context Protocol servers](https://microsoft.github.io/autogen/stable//reference/python/autogen_ext.tools.mcp.html) for:
+  - [File system operations](https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem) (reading/writing files)
+  - [Jira issue management](https://github.com/1broseidon/mcp-jira-server) (creating, updating, listing issues)
 - **Task Planning**: Includes a dedicated planning agent that coordinates work across the team
 
 ## Prerequisites
@@ -31,7 +31,7 @@ This example demonstrates using AutoGen's SelectorGroupChat to orchestrate speci
 2. Update the Jira configuration file with your project key.
    ```bash
    # Edit this file with your project key
-   vim tools/file_agent_workdir/.jira-config.json
+   code tools/file_agent_workdir/.jira-config.json
    ```
 
 3. Install dependencies
@@ -46,9 +46,9 @@ This example demonstrates using AutoGen's SelectorGroupChat to orchestrate speci
    cd tools && python3 ./run_tools.py
    ```
 
-5. Then, run the agent which also starts the MCP servers.
+5. Then, run the agents which also starts the MCP servers.
    ```bash
-   python3 agent.py
+   python3 agents.py
    ```
 
 ## Example Use Cases
