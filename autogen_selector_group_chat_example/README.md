@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This example demonstrates using AutoGen's [SelectorGroupChat](https://microsoft.github.io/autogen/stable//user-guide/agentchat-user-guide/selector-group-chat.html) to orchestrate specialized agents that interact with external systems. The agents can access external knowledge through API integrations and Model Context Protocol (MCP) servers. This approach enables a multi-agent workflow where each agent has specific capabilities and can be selected dynamically based on the task requirements.
+This example demonstrates using AutoGen's [SelectorGroupChat](https://microsoft.github.io/autogen/stable//user-guide/agentchat-user-guide/selector-group-chat.html) to orchestrate specialized agents that interact with external systems. The agents can access external knowledge through API integrations and Model Context Protocol (MCP) servers. This approach enables a multi-agent workflow where **each agent has specific capabilities** and can be selected dynamically based on the task requirements.
 
 ## Features
 

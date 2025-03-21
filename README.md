@@ -10,6 +10,8 @@ This repository demonstrates two different approaches to implementing agentic wo
 
 Both examples show how to leverage Large Language Models (LLMs) to plan and reason over external data through API integrations, allowing agents to retrieve and process information from various sources.
 
+A "knowledge provider" is a wrapper around an existing API or data source that exposes that to the Agent in a curated fashion.
+
 ## Repository Structure
 
 - `/langchain_plan_and_execute_example/`: Single-agent example using LangChain's Plan and Execute pattern
