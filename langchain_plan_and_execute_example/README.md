@@ -36,7 +36,13 @@ LangChain PlanAndExecute: <https://python.langchain.com/docs/modules/agents/agen
 
 1. Create a `.env` file based on the `.env.sample` file and populate the values. I have only tested it with `gpt-4-32k` so your milage may vary with GPT 3.5 based models.
 
-2. First run the 2 knowledge providers.
+2. Install dependencies
+    
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+3. First run the 2 knowledge providers.
 
     ```bash
     python3 ./store_and_stock_app.py
@@ -46,7 +52,7 @@ LangChain PlanAndExecute: <https://python.langchain.com/docs/modules/agents/agen
     python3 ./weather_app.py
     ```
 
-3. Then, run the agent.
+4. Then, run the agent.
 
     ```bash
     streamlit run ./agents_example.py
