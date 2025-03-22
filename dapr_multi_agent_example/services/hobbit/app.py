@@ -3,11 +3,17 @@ from dapr_agents.llm.openai.chat import OpenAIChatClient
 from dotenv import load_dotenv
 import asyncio
 import logging
+import os
 
 
 async def main():
     try:
-        llm = OpenAIChatClient() # todo: set azure openai config
+        llm = OpenAIChatClient(
+            api_key=os.getenv("AZURE_OPENAI_API_KEY"), # or add AZURE_OPENAI_API_KEY environment variable to .env file
+            azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"), # or add AZURE_OPENAI_ENDPOINT environment variable to .env file
+            azure_deployment=os.getenv("AZURE_OPENAI_DEPLOYMENT"),
+            api_version=os.getenv("AZURE_OPENAI_API_VERSION")
+        )
         # Define Agent
         hobbit_agent = Agent(role="Hobbit", name="Frodo",
             goal="Carry the One Ring to Mount Doom, resisting its corruptive power while navigating danger and uncertainty.",
