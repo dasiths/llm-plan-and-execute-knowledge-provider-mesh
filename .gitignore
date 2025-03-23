@@ -160,4 +160,4 @@ cython_debug/
 #.idea/
 
 # dapr agents
-dapr_multi_agent_example/services/workflow-llm/LLMOrchestrator_state.json
+**/services/workflow-llm/LLMOrchestrator_state.json
