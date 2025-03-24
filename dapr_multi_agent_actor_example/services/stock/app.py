@@ -1,16 +1,23 @@
-from dapr_agents import Agent, AgentActorService
+from dapr_agents import Agent, AgentActorService, tool
 from dapr_agents.llm.openai.chat import OpenAIChatClient
 from dotenv import load_dotenv
 import asyncio
 import logging
 import os
 import httpx
+from pydantic import BaseModel, Field
 
 BASE_URL = "http://localhost"
 
 
 # Stock API Calls
+class StockLevelSchema(BaseModel):
+    store_id: str = Field(description="ID of the store to check stock")
+    item_code: str = Field(description="Code of the item to check stock level for")
+
+@tool(args_model=StockLevelSchema)
 async def call_get_stock_level(store_id: str, item_code: str) -> str:
+    """Get the stock level for a specific item at a specific store."""
     async with httpx.AsyncClient() as client:
         try:
             response = await client.get(f"{BASE_URL}:5002/stock/qty/{store_id}/{item_code}")
@@ -20,7 +27,12 @@ async def call_get_stock_level(store_id: str, item_code: str) -> str:
             return f"Error getting stock level: {e.response.text}"
 
 
+class ItemCodeSchema(BaseModel):
+    item_code: str = Field(description="Code of the item to find available stock for")
+
+@tool(args_model=ItemCodeSchema)
 async def call_find_available_stock(item_code: str) -> str:
+    """Find available stock for a specific item across all stores."""
     async with httpx.AsyncClient() as client:
         try:
             response = await client.get(f"{BASE_URL}:5002/stock/available/{item_code}")
@@ -40,8 +52,8 @@ async def main():
         )
         # Define Agent
         stock_agent = Agent(
-            role="Stock Manager",
-            name="Stock Agent",
+            role="StockManager",
+            name="StockAgent",
             goal="Provide inventory stock information including availability and quantities.",
             instructions=[
                 "You are a stock agent.",

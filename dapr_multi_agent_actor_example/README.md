@@ -83,8 +83,8 @@ async def main():
     try:
         # Define Agent
         catalog_agent = Agent(
-            role="Catalog Manager",
-            name="Catalog Agent",
+            role="CatalogManager",
+            name="CatalogAgent",
             goal="Provide product catalog information",
             instructions=["Provide accurate product details"],
             tools=[call_get_catalog, call_get_item_description, call_find_item]

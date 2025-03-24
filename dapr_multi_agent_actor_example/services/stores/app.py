@@ -1,16 +1,19 @@
-from dapr_agents import Agent, AgentActorService
+from dapr_agents import Agent, AgentActorService, tool
 from dapr_agents.llm.openai.chat import OpenAIChatClient
 from dotenv import load_dotenv
 import asyncio
 import logging
 import os
 import httpx
+from pydantic import BaseModel, Field
 
 BASE_URL = "http://localhost"
 
 
 # Stores API Calls
+@tool()
 async def call_get_all_stores() -> str:
+    """Get information about all available stores."""
     async with httpx.AsyncClient() as client:
         try:
             response = await client.get(f"{BASE_URL}:5000/stores/all")
@@ -20,7 +23,12 @@ async def call_get_all_stores() -> str:
             return f"Error getting all stores: {e.response.text}"
 
 
+class StoreIdSchema(BaseModel):
+    store_id: str = Field(description="ID of the store to find")
+
+@tool(args_model=StoreIdSchema)
 async def call_find_store_by_id(store_id: str) -> str:
+    """Find a specific store by its ID."""
     async with httpx.AsyncClient() as client:
         try:
             response = await client.get(f"{BASE_URL}:5000/stores/store/{store_id}")
@@ -30,7 +38,12 @@ async def call_find_store_by_id(store_id: str) -> str:
             return f"Error finding store by ID {store_id}: {e.response.text}"
 
 
+class LocationSchema(BaseModel):
+    location: str = Field(description="Location to find stores near to")
+
+@tool(args_model=LocationSchema)
 async def call_find_closest_stores(location: str) -> str:
+    """Find stores closest to a specified location."""
     async with httpx.AsyncClient() as client:
         try:
             response = await client.get(
@@ -51,8 +64,8 @@ async def main():
         )
         # Define Agent
         stores_agent = Agent(
-            role="Stores Manager",
-            name="Stores Agent",
+            role="StoresManager",
+            name="StoresAgent",
             goal="Provide store information like store name and address.",
             instructions=[
                 "You are a stores agent.",

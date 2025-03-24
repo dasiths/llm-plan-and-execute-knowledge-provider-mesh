@@ -8,7 +8,7 @@ if __name__ == "__main__":
 
     attempt = 1
 
-    while attempt <= 10:
+    while attempt <= 2:
         try:
             print(f"Attempt {attempt}...")
             response = requests.post(workflow_url, json=task_payload, timeout=5)
