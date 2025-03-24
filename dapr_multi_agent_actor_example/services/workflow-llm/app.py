@@ -22,8 +22,17 @@ async def main():
             agents_registry_store_name="agentstatestore",
             agents_registry_key="agents_registry",
             service_port=8004,
-            max_iterations=3,
-            llm=llm
+            max_iterations=5,  # Increased to handle more complex queries involving multiple agents
+            llm=llm,
+            agent_selection_prompt="""
+            You are an orchestrator that selects the best agent to handle a specific task.
+            Available agents include:
+            - Catalog Manager: For product information, item descriptions, and item codes
+            - Stores Manager: For store locations, addresses, and finding nearby stores
+            - Stock Manager: For inventory information, stock quantities, and product availability
+
+            Select the most appropriate agent to handle each task step.
+            """
         )
 
         await workflow_service.start()

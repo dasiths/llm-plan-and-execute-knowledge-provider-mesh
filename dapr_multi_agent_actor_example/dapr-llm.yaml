@@ -7,18 +7,18 @@ common:
   daprdLogDestination: console
 
 apps:
-- appID: HobbitApp
-  appDirPath: ./services/hobbit/
+- appID: CatalogApp
+  appDirPath: ./services/catalog/
   appPort: 8001
   command: ["python3", "app.py"]
 
-- appID: WizardApp
-  appDirPath: ./services/wizard/
+- appID: StockApp
+  appDirPath: ./services/stock/
   appPort: 8002
   command: ["python3", "app.py"]
 
-- appID: ElfApp
-  appDirPath: ./services/elf/
+- appID: StoresApp
+  appDirPath: ./services/stores/
   appPort: 8003
   command: ["python3", "app.py"]
 
