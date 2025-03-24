@@ -166,6 +166,7 @@ The `services/workflow-llm/LLMOrchestrator_state.json` file contains the current
 - **State Store**: Persistent storage for both agent registration and conversational memory
 - **Actor Model**: Self-contained, sequential message processing via Dapr's Virtual Actor pattern
 - **Workflow Orchestration**: Coordinating agent interactions in a durable and resilient manner
+- **Tool Use**: Agents' ability to invoke external functions and APIs to accomplish specific tasks, with execution details visible in workflow state files
 
 ## Monitoring and Observability
 1. **Console Logs**: Monitor real-time workflow execution and agent interactions
