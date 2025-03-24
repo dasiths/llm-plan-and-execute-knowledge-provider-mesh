@@ -152,6 +152,8 @@ dapr run -f dapr-llm.yaml
 
 You will see the agents collaborating to process your query, with each specialized agent handling relevant parts of the task.
 
+The `services/workflow-llm/LLMOrchestrator_state.json` file contains the current state of the workflow. You will be able to see the reasoning steps and the output from each agent there.
+
 ## Example Queries to Try
 
 - "Find information about the Ryobi One Plus 18V Drill and check which stores have it in stock."
@@ -179,4 +181,9 @@ After completing this quickstart, you can:
 - Extend agents with custom tools
 - Deploy agents and Dapr to a Kubernetes cluster. For more information on read [Deploy Dapr on a Kubernetes cluster](https://docs.dapr.io/operations/hosting/kubernetes/kubernetes-deploy)
 - Check out the [Cookbooks](../../cookbook/)
+
+## Known Issues
+
+- If you run into weird issues with "state" try running the `make reset_dapr` command.
+- The [Dapr `@tool` decorator](https://github.com/dapr/dapr-agents/blob/main/quickstarts/03-agent-tool-call/weather_tools.py) doesn't seem to work well with async methods.
 
