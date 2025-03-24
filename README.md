@@ -8,7 +8,7 @@ This repository demonstrates three different approaches to implementing agentic 
 
 2. **AutoGen Selector Group Chat**: A multi-agent workflow using AutoGen's [SelectorGroupChat](https://microsoft.github.io/autogen/stable//user-guide/agentchat-user-guide/selector-group-chat.html) to orchestrate specialized agents that interact with external systems. This example showcases integration with Model Context Protocol (MCP) servers for file system operations and Jira issue management.
 
-3. **Dapr Multi-Agent Actor**: An event-driven multi-agent workflow using Dapr's virtual actor model to implement autonomous agents as microservices that collaborate through pub/sub messaging. This example demonstrates how to build resilient, distributed agent systems with state persistence and message-based coordination.
+3. **Dapr Multi-Agent Actor**: An event-driven multi-agent workflow using Dapr's virtual actor model in [Dapr Agents](https://github.com/dapr/dapr-agents) to implement autonomous agents as microservices that collaborate through pub/sub messaging. This example demonstrates how to build resilient, distributed agent systems with state persistence and message-based coordination. It makes use of the [LLM based coordinator](https://github.com/dapr/dapr-agents/blob/main/docs/concepts/agents.md#llm-based-workflow) to plan.
 
 All examples show how to leverage Large Language Models (LLMs) to plan and reason over external data through API integrations, allowing agents to retrieve and process information from various sources.
 
