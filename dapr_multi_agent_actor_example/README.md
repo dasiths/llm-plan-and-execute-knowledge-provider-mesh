@@ -51,20 +51,14 @@ components/               # Dapr configuration files
 ├── pubsub.yaml           # Pub/Sub configuration
 └── workflowstate.yaml    # Workflow state configuration
 services/                 # Directory for agent services
-├── hobbit/               # First agent's service
-│   └── app.py            # FastAPI app for hobbit
-├── wizard/               # Second agent's service
+├── catalog/              # Catalog agent's service
+│   └── app.py            # FastAPI app for catalog
+├── wizard/               # Wizard agent's service
 │   └── app.py            # FastAPI app for wizard
-├── elf/                  # Third agent's service
-│   └── app.py            # FastAPI app for elf
-└── workflow-random/      # Workflow orchestrator
-    └── app.py            # Workflow service
-└── workflow-roundrobin/  # Roundrobin orchestrator
-    └── app.py            # Workflow service    
+├── stores/               # Stores agent's service
+│   └── app.py            # FastAPI app for stores
 └── workflow-llm/         # LLM orchestrator
     └── app.py            # Workflow service        
-dapr-random.yaml          # Multi-App Run Template using the random orchestrator
-dapr-roundrobin.yaml      # Multi-App Run Template using the roundrobin orchestrator
 dapr-llm.yaml             # Multi-App Run Template using the LLM orchestrator
 ```
 
@@ -72,33 +66,39 @@ dapr-llm.yaml             # Multi-App Run Template using the LLM orchestrator
 
 ### Agent Service Implementation
 
-Each agent is implemented as a separate service. Here's an example for the Hobbit agent:
+Each agent is implemented as a separate service. Here's an example for the Catalog agent:
 
 ```python
 from dapr_agents import Agent, AgentActorService
 from dotenv import load_dotenv
 import asyncio
 import logging
+import httpx
+
+async def call_get_catalog() -> str:
+    # Implementation of API call to get catalog data
+    # ...
 
 async def main():
     try:
         # Define Agent
-        hobbit_agent = Agent(
-            role="Hobbit",
-            name="Frodo",
-            goal="Take the ring to Mordor",
-            instructions=["Speak like Frodo"]
+        catalog_agent = Agent(
+            role="Catalog Manager",
+            name="Catalog Agent",
+            goal="Provide product catalog information",
+            instructions=["Provide accurate product details"],
+            tools=[call_get_catalog, call_get_item_description, call_find_item]
         )
         
         # Expose Agent as a Service
-        hobbit_service = AgentActorService(
-            agent=hobbit_agent,
+        catalog_service = AgentActorService(
+            agent=catalog_agent,
             message_bus_name="messagepubsub",
-            agents_state_store_name="agentstatestore",
+            agents_registry_store_name="agentstatestore",
             port=8001,
         )
 
-        await hobbit_service.start()
+        await catalog_service.start()
     except Exception as e:
         print(f"Error starting service: {e}")
 
@@ -108,31 +108,31 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-Similar implementations exist for the Wizard (Gandalf) and Elf (Legolas) agents.
+Similar implementations exist for the Wizard and Stores agents.
 
-### Workflow Orchestrator Implementations
+### Workflow Orchestrator Implementation
 
-The workflow orchestrators manage the interaction between agents. Currently, Dapr Agents support three workflow types: RoundRobin, Random, and LLM-based. Here's an example for the Random workflow orchestrator (you can find examples for RoundRobin and LLM-based orchestrators in the project):
+The LLM-based orchestrator manages the interaction between agents by intelligently selecting which agent should handle each task:
 
 ```python
-from dapr_agents import RandomOrchestrator
+from dapr_agents import LLMOrchestrator
 from dotenv import load_dotenv
 import asyncio
 import logging
 
 async def main():
     try:
-        random_workflow_service = RandomOrchestrator(
-            name="RandomOrchestrator",
+        llm_workflow_service = LLMOrchestrator(
+            name="LLMOrchestrator",
             message_bus_name="messagepubsub",
-            state_store_name="agenticworkflowstate",
+            state_store_name="workflowstatestore",
             state_key="workflow_state",
             agents_registry_store_name="agentstatestore",
             agents_registry_key="agents_registry",
-            service_port=8009,
-            max_iterations=3
+            service_port=8004,
+            max_iterations=5
         )
-        await random_workflow_service.start()
+        await llm_workflow_service.start()
     except Exception as e:
         print(f"Error starting service: {e}")
 
@@ -144,112 +144,19 @@ if __name__ == "__main__":
 
 ### Running the Multi-Agent System
 
-The project includes three dapr multi-app run configuration files (`dapr-random.yaml`, `dapr-roundrobin.yaml` and `dapr-llm.yaml` ) for running all services and an additional Client application for interacting with the agents:
+Run all services using the Dapr CLI:
 
-Example: `dapr-random.yaml`
-```yaml
-version: 1
-common:
-  resourcesPath: ./components
-  logLevel: info
-  appLogDestination: console
-  daprdLogDestination: console
-
-apps:
-- appID: HobbitApp
-  appDirPath: ./services/hobbit/
-  appPort: 8001
-  command: ["python3", "app.py"]
-
-- appID: WizardApp
-  appDirPath: ./services/wizard/
-  appPort: 8002
-  command: ["python3", "app.py"]
-
-- appID: ElfApp
-  appDirPath: ./services/elf/
-  appPort: 8003
-  command: ["python3", "app.py"]
-
-- appID: WorkflowApp
-  appDirPath: ./services/workflow-random/
-  appPort: 8004
-  command: ["python3", "app.py"]
-
-- appID: ClientApp
-  appDirPath: ./services/client/
-  command: ["python3", "client.py"]
-```
-
-Start all services using the Dapr CLI:
-
-<!-- STEP
-name: Run text completion example
-match_order: none
-expected_stdout_lines:
-  - "Workflow started successfully!"
-  - "user:"
-  - "How to get to Mordor? We all need to help!"
-  - "assistant:"
-  - "user:"
-  - "assistant:"
-  - "workflow completed with status 'ORCHESTRATION_STATUS_COMPLETED' workflowName 'RandomWorkflow'"
-timeout_seconds: 120
-output_match_mode: substring
-background: false
-sleep: 5
--->
-```bash
-dapr run -f dapr-random.yaml 
-```
-<!-- END_STEP -->
-
-You will see the agents engaging in a conversation about getting to Mordor, with different agents contributing based on their character.
-
-You can also run the RoundRobin and LLM-based orchestrators using `dapr-roundrobin.yaml` and `dapr-llm.yaml` respectively:
-
-<!-- STEP
-name: Run text completion example
-match_order: none
-expected_stdout_lines:
-  - "Workflow started successfully!"
-  - "user:"
-  - "How to get to Mordor? We all need to help!"
-  - "assistant:"
-  - "user:"
-  - "assistant:"
-  - "workflow completed with status 'ORCHESTRATION_STATUS_COMPLETED' workflowName 'RoundRobinWorkflow'"
-timeout_seconds: 120
-output_match_mode: substring
-background: false
-sleep: 5
--->
-```bash
-dapr run -f dapr-roundrobin.yaml 
-```
-<!-- END_STEP -->
-
-<!-- STEP
-name: Run text completion example
-match_order: none
-expected_stdout_lines:
-  - "Workflow started successfully!"
-  - "user:"
-  - "How to get to Mordor? We all need to help!"
-  - "assistant:"
-  - "user:"
-  - "assistant:"
-  - "workflow completed with status 'ORCHESTRATION_STATUS_COMPLETED' workflowName 'LLMWorkflow'"
-timeout_seconds: 200
-output_match_mode: substring
-background: false
-sleep: 5
--->
 ```bash
 dapr run -f dapr-llm.yaml 
 ```
-<!-- END_STEP -->
-**Expected output:** The agents will engage in a conversation about getting to Mordor, with different agents contributing based on their character. Observe that in the logs, or checking the workflow state in [Redis Insights](https://dapr.github.io/dapr-agents/home/installation/#enable-redis-insights).
+
+You will see the agents collaborating to process your query, with each specialized agent handling relevant parts of the task.
+
+## Example Queries to Try
+
+- "Find information about the Ryobi One Plus 18V Drill and check which stores have it in stock."
+- "What are the 3 closest Hardy stores to Bayswater and what items do they carry?"
+- "Tell me about the Osmocote Organic Fertilizer and where I can buy it."
 
 ## Key Concepts
 - **Agent Service**: Stateful service exposing an agent via API endpoints with independent lifecycle management
@@ -258,33 +165,17 @@ dapr run -f dapr-llm.yaml
 - **Actor Model**: Self-contained, sequential message processing via Dapr's Virtual Actor pattern
 - **Workflow Orchestration**: Coordinating agent interactions in a durable and resilient manner
 
-## Workflow Types
-Dapr Agents supports multiple workflow orchestration patterns:
-
-1. **RoundRobin**: Cycles through agents sequentially, ensuring equal task distribution
-2. **Random**: Selects agents randomly for tasks, useful for load balancing and testing
-3. **LLM-based**: Uses an LLM (default: OpenAI's models like gpt-4o) to intelligently select agents based on context and task requirements
-
 ## Monitoring and Observability
 1. **Console Logs**: Monitor real-time workflow execution and agent interactions
 2. **Dapr Dashboard**: View components, configurations and service details at http://localhost:8080/
 3. **Zipkin Tracing**: Access distributed tracing at http://localhost:9411/zipkin/
-4. **Dapr Metrics**: Access agent performance metrics via (ex: HobbitApp) http://localhost:6001/metrics when configured
-
-## Troubleshooting
-
-1. **Service Startup**: If services fail to start, verify Dapr components configuration
-2. **Communication Issues**: Check Redis connection and pub/sub setup
-3. **Workflow Errors**: Check Zipkin traces for detailed request flows
-4. **Port Conflicts**: If ports are already in use, check which port is already in use
-5. **System Reset**: Clear Redis data through Redis Insights if needed
+4. **Dapr Metrics**: Access agent performance metrics via (ex: CatalogApp) http://localhost:6001/metrics when configured
 
 ## Next Steps
 
 After completing this quickstart, you can:
 
-- Add more agents to the workflow
-- Switch to another workflow orchestration pattern (RoundRobin, LLM-based)
+- Add more agents to the workflow (e.g., a Stock Agent specifically for inventory levels)
 - Extend agents with custom tools
 - Deploy agents and Dapr to a Kubernetes cluster. For more information on read [Deploy Dapr on a Kubernetes cluster](https://docs.dapr.io/operations/hosting/kubernetes/kubernetes-deploy)
 - Check out the [Cookbooks](../../cookbook/)
