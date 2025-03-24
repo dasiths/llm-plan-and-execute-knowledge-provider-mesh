@@ -17,8 +17,8 @@ apps:
   appPort: 8002
   command: ["python3", "app.py"]
 
-- appID: ElfApp
-  appDirPath: ./services/elf/
+- appID: StoresApp
+  appDirPath: ./services/stores/
   appPort: 8003
   command: ["python3", "app.py"]
 
