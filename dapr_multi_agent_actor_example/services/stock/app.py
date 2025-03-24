@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import asyncio
 import logging
 import os
-import httpx
+import requests
 from pydantic import BaseModel, Field
 
 BASE_URL = "http://localhost"
@@ -16,30 +16,28 @@ class StockLevelSchema(BaseModel):
     item_code: str = Field(description="Code of the item to check stock level for")
 
 @tool(args_model=StockLevelSchema)
-async def call_get_stock_level(store_id: str, item_code: str) -> str:
+def call_get_stock_level(store_id: str, item_code: str) -> str:
     """Get the stock level for a specific item at a specific store."""
-    async with httpx.AsyncClient() as client:
-        try:
-            response = await client.get(f"{BASE_URL}:5002/stock/qty/{store_id}/{item_code}")
-            response.raise_for_status()
-            return f"Stock at Store {store_id} for Item {item_code}: {response.json()}"
-        except httpx.HTTPStatusError as e:
-            return f"Error getting stock level: {e.response.text}"
+    try:
+        response = requests.get(f"{BASE_URL}:5002/stock/qty/{store_id}/{item_code}")
+        response.raise_for_status()
+        return f"Stock at Store {store_id} for Item {item_code}: {response.json()}"
+    except requests.HTTPError as e:
+        return f"Error getting stock level: {e.response.text}"
 
 
 class ItemCodeSchema(BaseModel):
     item_code: str = Field(description="Code of the item to find available stock for")
 
 @tool(args_model=ItemCodeSchema)
-async def call_find_available_stock(item_code: str) -> str:
+def call_find_available_stock(item_code: str) -> str:
     """Find available stock for a specific item across all stores."""
-    async with httpx.AsyncClient() as client:
-        try:
-            response = await client.get(f"{BASE_URL}:5002/stock/available/{item_code}")
-            response.raise_for_status()
-            return f"Available Stock for Item {item_code}: {response.json()}"
-        except httpx.HTTPStatusError as e:
-            return f"Error finding available stock: {e.response.text}"
+    try:
+        response = requests.get(f"{BASE_URL}:5002/stock/available/{item_code}")
+        response.raise_for_status()
+        return f"Available Stock for Item {item_code}: {response.json()}"
+    except requests.HTTPError as e:
+        return f"Error finding available stock: {e.response.text}"
 
 
 async def main():

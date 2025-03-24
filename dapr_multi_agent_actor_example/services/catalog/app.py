@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import asyncio
 import logging
 import os
-import httpx
+import requests
 from pydantic import BaseModel, Field
 
 BASE_URL = "http://localhost"
@@ -12,45 +12,42 @@ BASE_URL = "http://localhost"
 
 # Catalog API Calls
 @tool()
-async def call_get_catalog() -> str:
+def call_get_catalog() -> str:
     """Get the full product catalog information."""
-    async with httpx.AsyncClient() as client:
-        try:
-            response = await client.get(f"{BASE_URL}:5001/catalog/all")
-            response.raise_for_status()
-            return f"Full Catalog: {response.json()}"
-        except httpx.HTTPStatusError as e:
-            return f"Error getting catalog: {e.response.text}"
+    try:
+        response = requests.get(f"{BASE_URL}:5001/catalog/all")
+        response.raise_for_status()
+        return f"Full Catalog: {response.json()}"
+    except requests.HTTPError as e:
+        return f"Error getting catalog: {e.response.text}"
 
 
 class ItemCodeSchema(BaseModel):
     item_code: str = Field(description="Code of the item to get description for")
 
 @tool(args_model=ItemCodeSchema)
-async def call_get_item_description(item_code: str) -> str:
+def call_get_item_description(item_code: str) -> str:
     """Get detailed description of a specific item by its code."""
-    async with httpx.AsyncClient() as client:
-        try:
-            response = await client.get(f"{BASE_URL}:5001/catalog/item/{item_code}")
-            response.raise_for_status()
-            return f"Item {item_code}: {response.json()}"
-        except httpx.HTTPStatusError as e:
-            return f"Error getting item description: {e.response.text}"
+    try:
+        response = requests.get(f"{BASE_URL}:5001/catalog/item/{item_code}")
+        response.raise_for_status()
+        return f"Item {item_code}: {response.json()}"
+    except requests.HTTPError as e:
+        return f"Error getting item description: {e.response.text}"
 
 
 class QuerySchema(BaseModel):
     query: str = Field(description="Search query to find items in catalog")
 
 @tool(args_model=QuerySchema)
-async def call_find_item(query: str) -> str:
+def call_find_item(query: str) -> str:
     """Find items in the catalog matching a search query."""
-    async with httpx.AsyncClient() as client:
-        try:
-            response = await client.get(f"{BASE_URL}:5001/catalog/search/{query}")
-            response.raise_for_status()
-            return f"Search Results for '{query}': {response.json()}"
-        except httpx.HTTPStatusError as e:
-            return f"Error finding item: {e.response.text}"
+    try:
+        response = requests.get(f"{BASE_URL}:5001/catalog/search/{query}")
+        response.raise_for_status()
+        return f"Search Results for '{query}': {response.json()}"
+    except requests.HTTPError as e:
+        return f"Error finding item: {e.response.text}"
 
 
 async def main():

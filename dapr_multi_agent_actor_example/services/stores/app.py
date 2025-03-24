@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import asyncio
 import logging
 import os
-import httpx
+import requests
 from pydantic import BaseModel, Field
 
 BASE_URL = "http://localhost"
@@ -12,47 +12,44 @@ BASE_URL = "http://localhost"
 
 # Stores API Calls
 @tool()
-async def call_get_all_stores() -> str:
+def call_get_all_stores() -> str:
     """Get information about all available stores."""
-    async with httpx.AsyncClient() as client:
-        try:
-            response = await client.get(f"{BASE_URL}:5000/stores/all")
-            response.raise_for_status()
-            return f"All Stores: {response.json()}"
-        except httpx.HTTPStatusError as e:
-            return f"Error getting all stores: {e.response.text}"
+    try:
+        response = requests.get(f"{BASE_URL}:5000/stores/all")
+        response.raise_for_status()
+        return f"All Stores: {response.json()}"
+    except requests.HTTPError as e:
+        return f"Error getting all stores: {e.response.text}"
 
 
 class StoreIdSchema(BaseModel):
     store_id: str = Field(description="ID of the store to find")
 
 @tool(args_model=StoreIdSchema)
-async def call_find_store_by_id(store_id: str) -> str:
+def call_find_store_by_id(store_id: str) -> str:
     """Find a specific store by its ID."""
-    async with httpx.AsyncClient() as client:
-        try:
-            response = await client.get(f"{BASE_URL}:5000/stores/store/{store_id}")
-            response.raise_for_status()
-            return f"Store {store_id}: {response.json()}"
-        except httpx.HTTPStatusError as e:
-            return f"Error finding store by ID {store_id}: {e.response.text}"
+    try:
+        response = requests.get(f"{BASE_URL}:5000/stores/store/{store_id}")
+        response.raise_for_status()
+        return f"Store {store_id}: {response.json()}"
+    except requests.HTTPError as e:
+        return f"Error finding store by ID {store_id}: {e.response.text}"
 
 
 class LocationSchema(BaseModel):
     location: str = Field(description="Location to find stores near to")
 
 @tool(args_model=LocationSchema)
-async def call_find_closest_stores(location: str) -> str:
+def call_find_closest_stores(location: str) -> str:
     """Find stores closest to a specified location."""
-    async with httpx.AsyncClient() as client:
-        try:
-            response = await client.get(
-                f"{BASE_URL}:5000/stores/closest", params={"location": location}
-            )
-            response.raise_for_status()
-            return f"Closest Stores to {location}: {response.json()}"
-        except httpx.HTTPStatusError as e:
-            return f"Error finding closest stores: {e.response.text}"
+    try:
+        response = requests.get(
+            f"{BASE_URL}:5000/stores/closest", params={"location": location}
+        )
+        response.raise_for_status()
+        return f"Closest Stores to {location}: {response.json()}"
+    except requests.HTTPError as e:
+        return f"Error finding closest stores: {e.response.text}"
 
 async def main():
     try:
