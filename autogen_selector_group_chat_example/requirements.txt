@@ -5,3 +5,4 @@ fastapi
 uvicorn
 python-dotenv
 rich
+httpx
