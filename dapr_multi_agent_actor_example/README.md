@@ -53,8 +53,8 @@ components/               # Dapr configuration files
 services/                 # Directory for agent services
 ├── catalog/              # Catalog agent's service
 │   └── app.py            # FastAPI app for catalog
-├── wizard/               # Wizard agent's service
-│   └── app.py            # FastAPI app for wizard
+├── stock/                # Stock agent's service
+│   └── app.py            # FastAPI app for stock
 ├── stores/               # Stores agent's service
 │   └── app.py            # FastAPI app for stores
 └── workflow-llm/         # LLM orchestrator
