@@ -4,7 +4,7 @@ This quickstart demonstrates how to create and orchestrate event-driven workflow
 ## Prerequisites
 - Python 3.10 (recommended)
 - pip package manager
-- OpenAI API key
+- AzureOpenAI API key
 - Dapr CLI and Docker installed
 
 ## Environment Setup
@@ -25,10 +25,14 @@ pip install -r requirements.txt
 
 ## Configuration
 
-1. Create a `.env` file for your API keys:
+1. Create a `.env` file based on the env.sample file:
 
 ```env
-OPENAI_API_KEY=your_api_key_here
+AZURE_OPENAI_API_VERSION="2024-08-01-preview"
+AZURE_OPENAI_API_KEY=""
+AZURE_OPENAI_ENDPOINT=""
+AZURE_OPENAI_DEPLOYMENT="gpt4o"
+AZURE_OPENAI_MODEL_NAME="gpt-4o"
 ```
 
 2. Make sure Dapr is initialized on your system:
