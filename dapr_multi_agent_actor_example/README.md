@@ -164,6 +164,122 @@ The `services/workflow-llm/LLMOrchestrator_state.json` file contains the current
 - "What are the 3 closest Hardy stores to Bayswater and what items do they carry?"
 - "Tell me about the Osmocote Organic Fertilizer and where I can buy it."
 
+## Example Workflow Run
+
+```json
+{
+    "instances": {
+        "f11536ce3f9a4d74923f57e002a04871": {
+            "input": "Find information about the Ryobi One Plus 18V Drill and check which stores have it in stock.",
+            "output": "### Summary Report\n\nThe task to find information about the Ryobi One Plus 18V Drill and its stock availability has been successfully completed. Here are the key points:\n\n1. **Product Details:** \n   - The Ryobi One Plus 18V Drill was identified in the product catalog with the item code **RYB-DRILL**.\n\n2. **Stock Availability:** \n   - The drill is available in three stores with the following quantities:\n     - **Store ID 101:** 10 units\n     - **Store ID 104:** 10 units\n     - **Store ID 105:** 2 units\n\n3. **Store Information:**\n   - **Hardy Bayswater:** 200 Canterbury Rd, Bayswater VIC 3153 (Store ID 101)\n   - **Hardy Chadstone:** 345 Bay Rd, Chadstone VIC 3148 (Store ID 104)\n   - **Hardy Berwick:** 12 Bulla Rd, Berwick VIC 3806 (Store ID 105)\n\n### Final Outcome:\nThe Ryobi One Plus 18V Drill is in stock at three stores. You now have detailed product, inventory, and store information to proceed with purchase or further actions.",
+            "start_time": "2025-03-25T03:49:35.433408",
+            "end_time": "2025-03-25T03:51:06.009392",
+            "messages": [
+                {
+                    "id": "85d7d9be-777c-41d7-b80f-3fe7928d3252",
+                    "role": "user",
+                    "content": "## Mission Briefing\n\nWe have received the following task:\n\nFind information about the Ryobi One Plus 18V Drill and check which stores have it in stock.\n\n### Team of Agents\n- CatalogAgent: CatalogManager (Goal: Provide product catalog information including item descriptions and item codes.)\n- StockAgent: StockManager (Goal: Provide inventory stock information including availability and quantities.)\n- StoresAgent: StoresManager (Goal: Provide store information like store name and address.)\n\n### Execution Plan\nHere is the structured approach the team will follow to accomplish the task:\n\n[{'step': 1, 'description': 'Obtain detailed information about the Ryobi One Plus 18V Drill, including item code from the product catalog.', 'status': 'not_started', 'substeps': None}, {'step': 2, 'description': 'Query the inventory of this item across the available stores to determine availability and quantities.', 'status': 'not_started', 'substeps': None}, {'step': 3, 'description': 'Retrieve details of stores that currently stock the item, including names and addresses.', 'status': 'not_started', 'substeps': None}]\n",
+                    "timestamp": "2025-03-25T03:49:47.002906",
+                    "name": "LLMOrchestrator"
+                },
+                {
+                    "id": "1ab5d073-a663-4840-a542-33d75ec2027d",
+                    "role": "user",
+                    "content": "Please retrieve detailed information about the Ryobi One Plus 18V Drill, including its item code, from the product catalog.",
+                    "timestamp": "2025-03-25T03:49:55.002270",
+                    "name": "LLMOrchestrator"
+                },
+                {
+                    "id": "81b756c4-0bbb-4fac-9abb-57216e5e1b51",
+                    "role": "user",
+                    "content": "The Ryobi One Plus 18V Drill has the following details:\n\n- **Item Description:** Ryobi One Plus 18V Drill\n- **Item Code:** RYB-DRILL\n\nThis concludes the catalog lookup for the item.",
+                    "timestamp": "2025-03-25T03:50:03.002583",
+                    "name": "CatalogAgent"
+                },
+                {
+                    "id": "adecd1b9-8d55-4f7b-897e-23e6d2d5df65",
+                    "role": "user",
+                    "content": "Please provide the inventory stock information for the item code RYB-DRILL to determine availability and quantities.",
+                    "timestamp": "2025-03-25T03:50:23.004356",
+                    "name": "LLMOrchestrator"
+                },
+                {
+                    "id": "491a05a4-bc6e-46ae-b70c-97a6821c613d",
+                    "role": "user",
+                    "content": "The inventory stock information for the item code **RYB-DRILL** (Ryobi One Plus 18V Drill) shows the following availability:\n\n- **Store ID 101**: Quantity available is 10.\n- **Store ID 104**: Quantity available is 10.\n- **Store ID 105**: Quantity available is 2.",
+                    "timestamp": "2025-03-25T03:50:29.002288",
+                    "name": "StockAgent"
+                },
+                {
+                    "id": "a6dc76f2-6d12-4c97-a18b-c90eebf91619",
+                    "role": "user",
+                    "content": "Please provide store details, including names and addresses, for Store IDs 101, 104, and 105.",
+                    "timestamp": "2025-03-25T03:50:45.002150",
+                    "name": "LLMOrchestrator"
+                },
+                {
+                    "id": "6d282768-4265-46d4-928f-5fbe52acf480",
+                    "role": "user",
+                    "content": "Here are the store details for the locations that stock the Ryobi One Plus 18V Drill:\n\n1. **Store ID 101**\n   - **Store Name:** Hardy Bayswater\n   - **Address:** 200 Canterbury Rd, Bayswater VIC 3153\n\n2. **Store ID 104**\n   - **Store Name:** Hardy Chadstone\n   - **Address:** 345 Bay Rd, Chadstone VIC 3148\n\n3. **Store ID 105**\n   - **Store Name:** Hardy Berwick\n   - **Address:** 12 Bulla Rd, Berwick VIC 3806",
+                    "timestamp": "2025-03-25T03:50:53.002174",
+                    "name": "StoresAgent"
+                }
+            ],
+            "last_message": {
+                "id": "6d282768-4265-46d4-928f-5fbe52acf480",
+                "role": "user",
+                "content": "Here are the store details for the locations that stock the Ryobi One Plus 18V Drill:\n\n1. **Store ID 101**\n   - **Store Name:** Hardy Bayswater\n   - **Address:** 200 Canterbury Rd, Bayswater VIC 3153\n\n2. **Store ID 104**\n   - **Store Name:** Hardy Chadstone\n   - **Address:** 345 Bay Rd, Chadstone VIC 3148\n\n3. **Store ID 105**\n   - **Store Name:** Hardy Berwick\n   - **Address:** 12 Bulla Rd, Berwick VIC 3806",
+                "timestamp": "2025-03-25T03:50:53.002174",
+                "name": "StoresAgent"
+            },
+            "plan": [
+                {
+                    "step": 1,
+                    "description": "Obtain detailed information about the Ryobi One Plus 18V Drill, including item code from the product catalog.",
+                    "status": "completed",
+                    "substeps": null
+                },
+                {
+                    "step": 2,
+                    "description": "Query the inventory of this item across the available stores to determine availability and quantities.",
+                    "status": "completed",
+                    "substeps": null
+                },
+                {
+                    "step": 3,
+                    "description": "Retrieve details of stores that currently stock the item, including names and addresses.",
+                    "status": "completed",
+                    "substeps": []
+                }
+            ],
+            "task_history": [
+                {
+                    "agent": "CatalogAgent",
+                    "step": 1,
+                    "substep": null,
+                    "result": "The Ryobi One Plus 18V Drill has the following details:\n\n- **Item Description:** Ryobi One Plus 18V Drill\n- **Item Code:** RYB-DRILL\n\nThis concludes the catalog lookup for the item.",
+                    "timestamp": "2025-03-25T03:50:03.007422"
+                },
+                {
+                    "agent": "StockAgent",
+                    "step": 2,
+                    "substep": null,
+                    "result": "The inventory stock information for the item code **RYB-DRILL** (Ryobi One Plus 18V Drill) shows the following availability:\n\n- **Store ID 101**: Quantity available is 10.\n- **Store ID 104**: Quantity available is 10.\n- **Store ID 105**: Quantity available is 2.",
+                    "timestamp": "2025-03-25T03:50:29.007486"
+                },
+                {
+                    "agent": "StoresAgent",
+                    "step": 3,
+                    "substep": null,
+                    "result": "Here are the store details for the locations that stock the Ryobi One Plus 18V Drill:\n\n1. **Store ID 101**\n   - **Store Name:** Hardy Bayswater\n   - **Address:** 200 Canterbury Rd, Bayswater VIC 3153\n\n2. **Store ID 104**\n   - **Store Name:** Hardy Chadstone\n   - **Address:** 345 Bay Rd, Chadstone VIC 3148\n\n3. **Store ID 105**\n   - **Store Name:** Hardy Berwick\n   - **Address:** 12 Bulla Rd, Berwick VIC 3806",
+                    "timestamp": "2025-03-25T03:50:53.007111"
+                }
+            ]
+        }
+    }
+}
+```
+
 ## Key Concepts
 - **Agent Service**: Stateful service exposing an agent via API endpoints with independent lifecycle management
 - **Pub/Sub Messaging**: Event-driven communication between agents for real-time collaboration
