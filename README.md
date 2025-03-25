@@ -10,7 +10,7 @@ This repository demonstrates four different approaches to implementing agentic w
 
 3. **Dapr Multi-Agent Virtual Actors**: An event-driven multi-agent workflow using Dapr's virtual actor model in [Dapr Agents](https://github.com/dapr/dapr-agents) to implement autonomous agents as microservices that collaborate through pub/sub messaging. This example demonstrates how to build resilient, distributed agent systems with state persistence and message-based coordination. It makes use of the [LLM based coordinator](https://github.com/dapr/dapr-agents/blob/main/docs/concepts/agents.md#llm-based-workflow) to plan.
 
-4. **Dapr Multi-Agent Workflow**: An alternative implementation of event-driven multi-agent workflow using [Dapr Workflows](https://docs.dapr.io/developing-applications/building-blocks/workflow/workflow-overview/), which provides a simpler programming model while still leveraging pub/sub messaging for agent communication.
+4. **Dapr Multi-Agent Workflow**: An alternative implementation of event-driven multi-agent workflow using [Dapr Workflows](https://docs.dapr.io/developing-applications/building-blocks/workflow/workflow-overview/) in Dapr Agents, which provides a simpler programming model while still leveraging pub/sub messaging for agent communication.
 
 All examples show how to leverage Large Language Models (LLMs) to plan and reason over external data through API integrations, allowing agents to retrieve and process information from various sources.
 
