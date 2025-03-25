@@ -1,0 +1,6 @@
+dapr-agents>=0.1.0
+python-dotenv
+requests
+fastapi
+uvicorn
+httpx

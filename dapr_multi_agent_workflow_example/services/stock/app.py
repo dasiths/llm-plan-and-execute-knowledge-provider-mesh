@@ -1,4 +1,4 @@
-from dapr_agents import Agent, AgentActorService, tool
+from dapr_agents import AssistantAgent, tool
 from dapr_agents.llm.openai.chat import OpenAIChatClient
 from dotenv import load_dotenv
 import asyncio
@@ -13,7 +13,7 @@ BASE_URL = "http://localhost"
 # Stock API Calls
 class StockLevelSchema(BaseModel):
     store_id: str = Field(description="Store ID of the store to check stock")
-    item_code: str = Field(description="Item Code of the item to check stock level for")
+    item_code: str = Field(description="Item code of the item to check stock level for")
 
 @tool(args_model=StockLevelSchema)
 def call_get_stock_level(store_id: str, item_code: str) -> str:
@@ -27,7 +27,7 @@ def call_get_stock_level(store_id: str, item_code: str) -> str:
 
 
 class ItemCodeSchema(BaseModel):
-    item_code: str = Field(description="Item Code of the item to find available stock for")
+    item_code: str = Field(description="Item code of the item to find available stock for")
 
 @tool(args_model=ItemCodeSchema)
 def call_find_available_stock(item_code: str) -> str:
@@ -48,10 +48,10 @@ async def main():
             azure_deployment=os.getenv("AZURE_OPENAI_DEPLOYMENT"),
             api_version=os.getenv("AZURE_OPENAI_API_VERSION")
         )
-        # Define Agent
-        stock_agent = Agent(
-            role="StockManager",
+        # Define Agent using AssistantAgent
+        stock_service = AssistantAgent(
             name="StockAgent",
+            role="StockManager",
             goal="Provide inventory stock information including availability and quantities.",
             instructions=[
                 "You are a stock agent.",
@@ -63,13 +63,10 @@ async def main():
                 call_get_stock_level,
                 call_find_available_stock
             ],
-            llm=llm
-        )
-
-        # Expose Agent as an Actor over a Service
-        stock_service = AgentActorService(
-            agent=stock_agent,
+            llm=llm,
             message_bus_name="messagepubsub",
+            state_store_name="workflowstatestore",
+            state_key="workflow_state",
             agents_registry_store_name="agentstatestore",
             agents_registry_key="agents_registry",
             service_port=8002,
