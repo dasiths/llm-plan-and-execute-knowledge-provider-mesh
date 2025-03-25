@@ -112,7 +112,7 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-Similar implementations exist for the Wizard and Stores agents.
+Similar implementations exist for the Stock and Stores agents.
 
 ### Workflow Orchestrator Implementation
 

@@ -161,3 +161,4 @@ cython_debug/
 
 # dapr agents
 **/services/workflow-llm/LLMOrchestrator_state.json
+**/services/**/**Agent_state.json

@@ -12,8 +12,8 @@ BASE_URL = "http://localhost"
 
 # Stock API Calls
 class StockLevelSchema(BaseModel):
-    store_id: str = Field(description="ID of the store to check stock")
-    item_code: str = Field(description="Code of the item to check stock level for")
+    store_id: str = Field(description="Store ID of the store to check stock")
+    item_code: str = Field(description="Item Code of the item to check stock level for")
 
 @tool(args_model=StockLevelSchema)
 def call_get_stock_level(store_id: str, item_code: str) -> str:
@@ -27,7 +27,7 @@ def call_get_stock_level(store_id: str, item_code: str) -> str:
 
 
 class ItemCodeSchema(BaseModel):
-    item_code: str = Field(description="Code of the item to find available stock for")
+    item_code: str = Field(description="Item Code of the item to find available stock for")
 
 @tool(args_model=ItemCodeSchema)
 def call_find_available_stock(item_code: str) -> str:

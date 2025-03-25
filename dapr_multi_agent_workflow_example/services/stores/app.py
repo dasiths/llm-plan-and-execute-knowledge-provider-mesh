@@ -1,4 +1,4 @@
-from dapr_agents import Agent, AgentActorService, tool
+from dapr_agents import AssistantAgent, tool
 from dapr_agents.llm.openai.chat import OpenAIChatClient
 from dotenv import load_dotenv
 import asyncio
@@ -23,7 +23,7 @@ def call_get_all_stores() -> str:
 
 
 class StoreIdSchema(BaseModel):
-    store_id: str = Field(description="ID of the store to find")
+    store_id: str = Field(description="Store ID of the store to find")
 
 @tool(args_model=StoreIdSchema)
 def call_find_store_by_id(store_id: str) -> str:
@@ -59,10 +59,10 @@ async def main():
             azure_deployment=os.getenv("AZURE_OPENAI_DEPLOYMENT"),
             api_version=os.getenv("AZURE_OPENAI_API_VERSION")
         )
-        # Define Agent
-        stores_agent = Agent(
-            role="StoresManager",
+
+        stores_service = AssistantAgent(
             name="StoresAgent",
+            role="StoresManager",
             goal="Provide store information like store name and address.",
             instructions=[
                 "You are a stores agent.",
@@ -75,13 +75,10 @@ async def main():
                 call_find_store_by_id,
                 call_find_closest_stores
             ],
-            llm=llm
-        )
-
-        # Expose Agent as an Actor over a Service
-        stores_service = AgentActorService(
-            agent=stores_agent,
+            llm=llm,
             message_bus_name="messagepubsub",
+            state_store_name="workflowstatestore",
+            state_key="workflow_state",
             agents_registry_store_name="agentstatestore",
             agents_registry_key="agents_registry",
             service_port=8003,

@@ -1,4 +1,4 @@
-from dapr_agents import Agent, AgentActorService, tool
+from dapr_agents import AssistantAgent, tool
 from dapr_agents.llm.openai.chat import OpenAIChatClient
 from dotenv import load_dotenv
 import asyncio
@@ -58,10 +58,10 @@ async def main():
             azure_deployment=os.getenv("AZURE_OPENAI_DEPLOYMENT"),
             api_version=os.getenv("AZURE_OPENAI_API_VERSION")
         )
-        # Define Agent
-        catalog_agent = Agent(
-            role="CatalogManager",
+        
+        catalog_service = AssistantAgent(
             name="CatalogAgent",
+            role="CatalogManager",
             goal="Provide product catalog information including item descriptions and item codes.",
             instructions=[
                 "You are a catalog agent.",
@@ -74,13 +74,10 @@ async def main():
                 call_get_item_description,
                 call_find_item
             ],
-            llm=llm
-        )
-
-        # Expose Agent as an Actor over a Service
-        catalog_service = AgentActorService(
-            agent=catalog_agent,
+            llm=llm,
             message_bus_name="messagepubsub",
+            state_store_name="workflowstatestore",
+            state_key="workflow_state",
             agents_registry_store_name="agentstatestore",
             agents_registry_key="agents_registry",
             service_port=8001,
